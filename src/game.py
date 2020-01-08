@@ -1,10 +1,12 @@
 import pygame
-from src.entities.entity import Entity
+from src.entities.player import Player
 
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 TARGET_FPS = 60
+PLAYER_DEF_WIDTH = 20
+PLAYER_DEF_HEIGHT = 30
 
 
 
@@ -18,20 +20,30 @@ class Game:
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
         self.clock = pygame.time.Clock()
         self.entities = []
+        self.hud_font = pygame.font.Font(None, 18)
 
     def update(self):
         for entity in self.entities:
-            entity.update()
+            entity.update(self.entities)
 
-    def draw(self):
+    def draw(self, player):
         self.screen.fill(pygame.Color("black"))
         for entity in self.entities:
             entity.draw(self.screen)
+        self.draw_hud(player)
+
+
+    def draw_hud(self, player):
+        weapon_surface = self.hud_font.render(player.weapons[player.weapon_idx].name, False, pygame.Color("white"))
+        self.screen.blit(weapon_surface, (0, 0))
+
 
     def run(self):
         self.running = True
-        e = Entity(200, 300, 150, 100, pygame.Color("red"))
-        self.entities.append(e)
+        player_start_x = SCREEN_WIDTH / 2 - PLAYER_DEF_WIDTH / 2
+        player_start_y = SCREEN_HEIGHT / 2 - PLAYER_DEF_HEIGHT / 2
+        player = Player(player_start_x, player_start_y, PLAYER_DEF_WIDTH, PLAYER_DEF_HEIGHT)
+        self.entities.append(player)
 
         while self.running:
             events = pygame.event.get()
@@ -40,7 +52,7 @@ class Game:
                     self.running = False
 
             self.update()
-            self.draw()
+            self.draw(player)
             pygame.display.flip()
             self.clock.tick(TARGET_FPS)
 

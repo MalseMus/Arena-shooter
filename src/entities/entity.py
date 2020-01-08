@@ -12,7 +12,7 @@ class Entity:
         self.h = h
         self.c = c
 
-    def update(self):
+    def update(self, entities):
         raise Exception("not implemented")
 
     def draw(self, screen):
