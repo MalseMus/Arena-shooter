@@ -5,12 +5,14 @@ class Entity:
 
 
 
-    def __init__(self, x, y, w, h, c):
+    def __init__(self, x, y, w, h, c, faction = 0, hp = 0):
         self.x = x
         self.y = y
         self.w = w
         self.h = h
         self.c = c
+        self.faction = faction
+        self.hp = hp
         self.alive = True
 
     def update(self, entities):
@@ -34,3 +36,13 @@ class Entity:
 
     def center(self):
         return (self.x + self.w / 2, self.y + self.h / 2)
+
+    def is_outside_screen(self):
+        screen_w, screen_h = pygame.display.get_surface().get_size()
+        return (self.x + self.w < 0
+            or self.x > screen_w
+            or self.y + self.h < 0
+            or self.y > screen_h)
+
+    def hurt(self, dmg):
+        pass

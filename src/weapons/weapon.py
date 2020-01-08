@@ -7,11 +7,13 @@ import pygame
 
 class Weapon:
 
-    def __init__(self, name, fire_rate, bullet_v):
+    def __init__(self, name, fire_rate, bullet_v, bullet_dmg, parent_faction):
         self.name = name
         self.fire_rate = fire_rate
         self.bullet_v = bullet_v
+        self.bullet_dmg = bullet_dmg
         self.reload_timer = 0
+        self.parent_faction = parent_faction
 
 
     def fire(self, origin):

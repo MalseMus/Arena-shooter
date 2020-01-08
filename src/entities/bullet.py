@@ -1,15 +1,16 @@
 import math
 import pygame
 from src.entities.entity import Entity
-from src.entities.wall import Wall
 
 class Bullet(Entity):
 
-    def __init__(self, x, y, r, c, v, t):
+    def __init__(self, x, y, r, c, v, t, dmg, faction):
         super().__init__(x, y, r, r, c)
         self.v = v
         self.t = t
         self.r = r
+        self.dmg = dmg
+        self.faction = faction
 
     def update(self, entities):
         if not self.alive:
@@ -19,7 +20,7 @@ class Bullet(Entity):
         self.y += math.sin(self.t) * self.v
 
     def draw(self, screen):
-        if not self.alive:
+        if not self.alive or self.is_outside_screen():
             return
         pygame.draw.circle(screen, self.c, (int(self.x), int(self.y)), self.r)
 
@@ -27,5 +28,11 @@ class Bullet(Entity):
     def on_collision(self, target):
         if not self.alive or not target.alive:
             return
-        if type(target) == Wall:
+        if target.faction == 0:
             self.alive = False
+            return
+
+        if target.faction != self.faction:
+            target.hurt(self.dmg)
+            self.alive = False
+

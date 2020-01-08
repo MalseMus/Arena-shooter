@@ -12,9 +12,9 @@ WEAPON_KEYS = [pygame.K_1, pygame.K_2, pygame.K_3, pygame.K_4, pygame.K_5, pygam
 class Player(Entity):
 
     def __init__(self, x, y, w, h):
-        super().__init__(x, y, w, h, pygame.Color("yellow"))
+        super().__init__(x, y, w, h, pygame.Color("yellow"), 1, 100)
         self.v = 5
-        self.weapons = [Rifle(), SubmachineGun(), Shotgun()] + [None] * 6
+        self.weapons = [Rifle(self.faction), SubmachineGun(self.faction), Shotgun(self.faction)] + [None] * 6
         self.weapon_idx = 0
 
 
@@ -34,6 +34,16 @@ class Player(Entity):
             if keys[k]:
                 self.weapon_idx = k - pygame.K_1 if self.weapons[k - pygame.K_1] is not None else self.weapon_idx
         self.check_collisions(entities)
+        screen_w, screen_h = pygame.display.get_surface().get_size()
+
+        if self.y < 0:
+            self.y = 0
+        if self.x < 0:
+            self.x = 0
+        if self.y > screen_h - self.h:
+            self.y = screen_h - self.h
+        if self.x > screen_w - self.w:
+            self.x = screen_w - self.w
 
         if pygame.mouse.get_pressed()[0]:
             bullets = self.weapons[self.weapon_idx].fire(self)
@@ -41,7 +51,7 @@ class Player(Entity):
                 entities.append(b)
 
     def draw(self, screen):
-        if not self.alive:
+        if not self.alive or self.is_outside_screen():
             return
         pygame.draw.rect(screen, self.c, self.rect())
 
@@ -65,3 +75,9 @@ class Player(Entity):
             if my_center[1] > target_center[1] and keys[pygame.K_w]:
                 if self.y < target.y + target.h:
                     self.y += self.v
+
+
+    def hurt(self, dmg):
+        self.hp -= dmg
+        if self.hp <= 0:
+            exit()

@@ -1,6 +1,7 @@
 import pygame
 from src.entities.player import Player
 from src.entities.wall import Wall
+from src.entities.enemies.zombie import Zombie
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
@@ -51,6 +52,7 @@ class Game:
         self.entities.append(Wall(3 * MAP_GAP_W + BOX_W, MAP_GAP_H, BOX_W, BOX_H))
         self.entities.append(Wall(3 * MAP_GAP_W + BOX_W, 3 * MAP_GAP_H + BOX_H, BOX_W, BOX_H))
         self.entities.append(Wall(MAP_GAP_W, 3 * MAP_GAP_H + BOX_H, BOX_W, BOX_H))
+        self.entities.append(Zombie(10, 10))
 
         while self.running:
             events = pygame.event.get()
