@@ -13,6 +13,7 @@ class Bullet(Entity):
         self.faction = faction
 
     def update(self, entities):
+        self.alive = not self.is_outside_screen()
         if not self.alive:
             return
         self.check_collisions(entities)
@@ -20,7 +21,7 @@ class Bullet(Entity):
         self.y += math.sin(self.t) * self.v
 
     def draw(self, screen):
-        if not self.alive or self.is_outside_screen():
+        if not self.alive:
             return
         pygame.draw.circle(screen, self.c, (int(self.x), int(self.y)), self.r)
 

@@ -80,4 +80,4 @@ class Player(Entity):
     def hurt(self, dmg):
         self.hp -= dmg
         if self.hp <= 0:
-            exit()
+            self.alive = False

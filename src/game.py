@@ -1,4 +1,8 @@
+from datetime import datetime
+
 import pygame
+
+from src.entities.enemies.enemy import Enemy
 from src.entities.player import Player
 from src.entities.wall import Wall
 from src.entities.enemies.zombie import Zombie
@@ -41,6 +45,8 @@ class Game:
         weapon_surface = self.hud_font.render(player.weapons[player.weapon_idx].name, False, pygame.Color("white"))
         self.screen.blit(weapon_surface, (0, 0))
 
+    def get_enemy_count(self):
+        return len([e for e in self.entities if e.alive and isinstance(e, Enemy)])
 
     def run(self):
         self.running = True
@@ -52,9 +58,29 @@ class Game:
         self.entities.append(Wall(3 * MAP_GAP_W + BOX_W, MAP_GAP_H, BOX_W, BOX_H))
         self.entities.append(Wall(3 * MAP_GAP_W + BOX_W, 3 * MAP_GAP_H + BOX_H, BOX_W, BOX_H))
         self.entities.append(Wall(MAP_GAP_W, 3 * MAP_GAP_H + BOX_H, BOX_W, BOX_H))
-        self.entities.append(Zombie(10, 10, player))
+        x1 = MAP_GAP_W / 2
+        x2 = SCREEN_WIDTH / 2
+        x3 = SCREEN_WIDTH - MAP_GAP_W / 2
+        y1 = MAP_GAP_H / 2
+        y2 = SCREEN_HEIGHT / 2
+        y3= SCREEN_HEIGHT - MAP_GAP_H / 2
 
-        while self.running:
+        spawnpoints = [(x1, y1),
+                       (x1, y2),
+                       (x1, y3),
+                       (x2, y1),
+                       (x2, y3),
+                       (x3, y1),
+                       (x3, y2),
+                       (x3, y3)]
+
+        minimum_enemy_count = 4
+        last_spawn_point_index = 1
+
+        time_started = datetime.now()
+
+
+        while self.running and player.alive:
             events = pygame.event.get()
             for event in events:
                 if event.type == pygame.QUIT:
@@ -64,7 +90,24 @@ class Game:
             self.draw(player)
             pygame.display.flip()
             self.entities = [e for e in self.entities if e.alive]
+            enemy_count = self.get_enemy_count()
+
+            if enemy_count < minimum_enemy_count:
+                spawn_point = spawnpoints[last_spawn_point_index % len(spawnpoints)]
+                last_spawn_point_index += 1
+                zombie = Zombie(spawn_point[0], spawn_point[1], player)
+                zombie.alive = True
+                self.entities.append(zombie)
+                enemy_count += 1
+                print(f"added enemy. count is now {enemy_count}")
+            print(f"total entities: {len(self.entities)}, alive enemies: {enemy_count}")
+
             self.clock.tick(TARGET_FPS)
+
+        time_survived = (datetime.now() - time_started)
+        seconds_survived = int(time_survived.total_seconds())
+        print(f"Time Survived: {seconds_survived} seconds")
+
 
 
 
