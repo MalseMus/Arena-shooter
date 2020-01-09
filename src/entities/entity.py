@@ -24,6 +24,8 @@ class Entity:
     def rect(self):
         return pygame.Rect(self.x, self.y, self.w, self.h)
 
+    def rect_wanted_pos(self, pos):
+        return pygame.Rect(pos[0], pos[1], self.w, self.h)
 
     def on_collision(self, target):
         pass
