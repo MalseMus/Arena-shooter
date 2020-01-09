@@ -13,7 +13,7 @@ class Player(Entity):
 
     def __init__(self, x, y, w, h):
         super().__init__(x, y, w, h, pygame.Color("yellow"), 1, 100)
-        self.v = 5
+        self.v = 3
         self.weapons = [Rifle(self.faction), SubmachineGun(self.faction), Shotgun(self.faction)] + [None] * 6
         self.weapon_idx = 0
 

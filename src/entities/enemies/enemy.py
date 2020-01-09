@@ -12,6 +12,7 @@ class Enemy(Entity):
         if not self.alive:
             return
 
+
     def draw(self, screen):
         if not self.alive or self.is_outside_screen():
             return
